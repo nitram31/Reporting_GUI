@@ -10,7 +10,7 @@ Hi, I am Martin, Anna's masters internship student, know that I'm not paid, so I
 will stand the wrath of time.
 
 This script will be used to parse Excel spreadsheet, if you edit this script at a later date, please don't judge me, 
-it was made to be functional.
+it was made by a student learning python with the only goal of making something functional.
 """
 
 
@@ -18,8 +18,10 @@ def analyse_file(path, variable):
     file = pd.read_excel(path, sheet_name='Upgrade', header=10)
     choice = variable.get()
     body_dict = {}
+
     for i in range(1, 11):
         body_dict['body' + str(i)] = {'body_header': [], 'body': [], 'name': ''}
+
     for i in range(0, len(file)):
         if file['Project'][i] == choice:
             next_step = file['Next Step'][i]
