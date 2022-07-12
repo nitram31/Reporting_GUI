@@ -180,16 +180,17 @@ def main():
 
     def show_option(path, sheet_name):
         dropdown_menu = drop_down_menu
-        dropdown_menu.destroy()
         option_list = get_options(path, sheet_name)
         if option_list:
             variable.set(option_list[0])
-            dropdown_menu = OptionMenu(root, variable, *option_list)
+            dropdown_menu1 = OptionMenu(root, variable, *option_list)
         else:
             variable.set('')
-            dropdown_menu = OptionMenu(root, variable, '')
+            dropdown_menu1 = OptionMenu(root, variable, '')
 
-        dropdown_menu.grid(row=4, column=0)
+        dropdown_menu1.grid(row=4, column=0)
+        dropdown_menu.destroy()
+
 
     def myclick():
 
@@ -214,13 +215,14 @@ def main():
             slide_list = get_slide(path)
             sheet_name_variable.set(slide_list[0])
             dropdown_menu_slide = drop_down_menu_slide
-            dropdown_menu_slide.destroy()
-            dropdown_menu_slide = OptionMenu(root, sheet_name_variable, *slide_list,
-                                             command=OptionMenu_SelectionEvent)
-            dropdown_menu_slide.grid(row=3, column=0)
+            dropdown_menu_slide1 = OptionMenu(root, sheet_name_variable, *slide_list,
+                                              command=OptionMenu_SelectionEvent)
+            dropdown_menu_slide1.grid(row=3, column=0)
             show_option(path, sheet_name_variable)
             mybutton = Button(root, text="Run scan", command=myclick, state="active")
             mybutton.grid(row=5, column=0)
+            dropdown_menu_slide.destroy()
+
             root.update()
         except ValueError:
             button_message = "something went wrong, the most likely cause for this error is that you selected " + \
