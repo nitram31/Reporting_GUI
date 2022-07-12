@@ -158,6 +158,12 @@ def get_slide(path):
 
 
 def main():
+    def myclick_sub():
+        myclick()
+
+    def myfile_sub():
+        myfile()
+
     root = Tk()
     variable = tkinter.StringVar(root)
     variable.set('')
@@ -176,7 +182,14 @@ def main():
     drop_down_menu_slide.grid(row=3, column=0)
     drop_down_menu.grid(row=4, column=0)
 
-    mylabel2 = Label(root, text="")
+    message = StringVar()
+    mylabel2 = Label(root, textvariable=message)
+
+    mybutton = Button(root, text="Run scan", command=myclick_sub, state="disabled")
+    mybutton2 = Button(frame2, text="Select file", command=myfile_sub)
+    mybutton.grid(row=5, column=0)
+    mybutton2.grid(row=2, columns=2)
+
 
     def show_option(path, sheet_name):
         dropdown_menu = drop_down_menu
@@ -191,19 +204,22 @@ def main():
         dropdown_menu1.grid(row=4, column=0)
         dropdown_menu.destroy()
 
-
     def myclick():
-
         path = mypath.get()
         if path != "":
             body_dict, choice = analyse_file(path, variable, sheet_name_variable)
             output_file(body_dict, choice)
             button_message = "Everything went smoothly, the files should be in the folder " + \
-                             "from wich you executed the program"
+                             "from which you executed the program"
             mylabel2 = Label(root, text=button_message)
             mylabel2.grid(row=6, column=0)
 
     def myfile():
+
+        message.set("Please allow up to 1 minute to read the file, depending on its size")
+        mylabel2.grid(row=6, column=0)
+
+
         def OptionMenu_SelectionEvent(event):
             show_option(path, event)
 
@@ -225,29 +241,19 @@ def main():
 
             root.update()
         except ValueError:
-            button_message = "something went wrong, the most likely cause for this error is that you selected " + \
-                             "the wrong type of file"
-            mylabel2 = Label(root, text=button_message)
-            mylabel2.grid(row=5, column=0)
+            message.set("something went wrong, the most likely cause for this error is that you selected " + \
+                        "the wrong type of file")
 
-    mybutton = Button(root, text="Run scan", command=myclick, state="disabled")
-    mybutton2 = Button(frame2, text="Select file", command=myfile)
-    mybutton.grid(row=5, column=0)
-    mybutton2.grid(row=2, columns=2)
-
-    mylabel2.grid(row=2, column=1)
     try:
         root.mainloop()
     except Exception as e:
         # please remove my email address if you took over this script
         email_address = 'martin.racoupeau@univ-tlse3.fr'
-        button_message = 'Something went wrong, please send the errorlog that should have been created in the ' \
-                         + 'folder from wich you executed the program to ' \
-                         + email_address \
-                         + ' or the person currently maintaining the script.'
+        message.set('Something went wrong, please send the errorlog that should have been created in the ' \
+                    + 'folder from which you executed the program to ' \
+                    + email_address \
+                    + ' or the person currently maintaining the script.')
 
-        mylabel2 = Label(root, text=button_message)
-        mylabel2.grid(row=5, column=0)
         now = datetime.now()
         # dd/mm/YY H:M:S
         dt_string = now.strftime("%d-%m-%Y%H:%M:%S")
