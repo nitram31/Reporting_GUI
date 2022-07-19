@@ -16,122 +16,105 @@ it was made by a student learning python with the only goal of making something 
 
 def analyse_file(path, variable, sheet_name):
     sheet_name = sheet_name.get()
-    file = pd.read_excel(path, sheet_name=sheet_name, header=10)
+    file = pd.read_excel(path, sheet_name=sheet_name, header=10, parse_dates=True)
     choice = variable.get()
 
     body_dict = {}
 
-    for i in range(1, 11):
-        body_dict['body' + str(i)] = {'body_header': [], 'body': [], 'name': ''}
+    default_header = ['✓Closed', 'Dialog', 'ΙΡΑ', 'Recourse', 'RENEGO', 'Survey']
 
     for i in range(0, len(file)):
         if file['Project'][i] == choice:
             next_step = file['Next Step'][i]
+            if next_step not in body_dict.keys():
+                body_dict[next_step] = {'body_header': [], 'body': []}
 
             match next_step:
                 case "Permitting":
-                    if not body_dict['body1']['body_header']:
-                        body_dict['body1']['name'] = next_step
-                        body_dict['body1']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
 
-                    body_dict['body1']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Blocking Issue'][i], file['Comment'][i]])
                 case "On Hold":
-                    if not body_dict['body2']['body_header']:
-                        body_dict['body2']['name'] = next_step
-
-                        body_dict['body2']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
 
-                    body_dict['body2']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Blocking Issue'][i], file['Comment'][i]])
                 case "Correction BP":
-                    if not body_dict['body3']['body_header']:
-                        body_dict['body3']['name'] = next_step
-
-                        body_dict['body3']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
 
-                    body_dict['body3']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Blocking Issue'][i], file['Comment'][i]])
                 case "BP Signing":
-                    if not body_dict['body4']['body_header']:
-                        body_dict['body4']['name'] = next_step
-
-                        body_dict['body4']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
-
-                    body_dict['body4']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Blocking Issue'][i], file['Comment'][i]])
 
                 case "BP Application":
-                    if not body_dict['body5']['body_header']:
-                        body_dict['body5']['name'] = next_step
-
-                        body_dict['body5']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', 'Comment']
 
-                    body_dict['body5']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Comment'][i]])
                 case "Draft":
-                    if not body_dict['body6']['body_header']:
-                        body_dict['body6']['name'] = next_step
-
-                        body_dict['body6']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', 'Survey', 'Comment']
 
-                    body_dict['body6']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Survey'][i], file['Comment'][i]])
                 case "NIS":
-                    if not body_dict['body7']['body_header']:
-                        body_dict['body7']['name'] = next_step
-
-                        body_dict['body7']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', 'preNIS ready for QS',
                              'preNIS sent to Provider', 'preNIS approved by provider',
                              'Final NIS ready for QS', 'Final NIS sent to Provider', 'Comment']
 
-                    body_dict['body7']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['preNIS ready for QS'][i],
-                                                       file['preNIS sent to Provider'][i],
-                                                       file['preNIS approved by provider'][i],
-                                                       file['Final NIS ready for QS'][i],
-                                                       file['Final NIS sent to Provider'],
-                                                       file['Comment'][i]])
                 case "PA":
-                    if not body_dict['body8']['body_header']:
-                        body_dict['body8']['name'] = next_step
-
-                        body_dict['body8']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', 'Comment']
 
-                    body_dict['body8']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Comment'][i]])
                 case "Survey":
-                    if not body_dict['body9']['body_header']:
-                        body_dict['body9']['name'] = next_step
-
-                        body_dict['body9']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', 'Survey', 'Comment']
 
-                    body_dict['body9']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                       file['Survey'][i], file['Comment'][i]])
                 case "AVOR":
-                    if not body_dict['body10']['body_header']:
-                        body_dict['body10']['name'] = next_step
-
-                        body_dict['body10']['body_header'] = \
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', 'Comment']
 
-                    body_dict['body10']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                        file['Comment'][i]])
+                case 'Closed' | 'Dialog' | 'EGT to sign Lease' | 'GA' | 'MBA Analysis' | 'Prep Lease (MV/DBV)' | \
+                     'Recourse' | 'SFRO' | 'SFR1' | 'TC' | 'Unsuccessful Search' | 'ΙΡΑ' | 'RENEGO' | 'Survey' | \
+                     'Measurem. Report' | 'New Site':
+                    if not body_dict[next_step]['body_header']:
+                        body_dict[next_step]['body_header'] = \
+                            ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
+
+            body_dict[next_step]['body'].append(make_line(body_dict[next_step]['body_header'], file, i))
+
     return body_dict, choice
+
+
+def make_line(header, file, i):
+    line_list = []
+    for el in header:
+        if isinstance(file[el][i], pd.Timestamp):
+            line_list.append(file[el][i].date())
+        else:
+            line_list.append(file[el][i])
+    return line_list
+
+
+def return_proper_time(date):
+
+    try:
+        return str(date)[0:10]
+    except IndexError:
+        return pd.nan
 
 
 def output_file(body_dict, choice):
     for name in body_dict.keys():
-        output_name = body_dict[name]['name']
+        output_name = name
         body = body_dict[name]['body']
         header = body_dict[name]['body_header']
         df = pd.DataFrame.from_records(body, columns=header)
@@ -219,9 +202,9 @@ def main():
             show_option(path, event)
 
         try:
-            root.fasta_file = filedialog.askopenfilename()
             message.set("Please allow up to 1 minute to read the file, depending on its size")
             mylabel2.grid(row=6, column=0)
+            root.fasta_file = filedialog.askopenfilename()
             mypath.delete(first=0, last=tkinter.END)
             mypath.insert(0, root.fasta_file)
             path = mypath.get()
