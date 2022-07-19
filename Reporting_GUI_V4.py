@@ -167,6 +167,7 @@ def main():
         myfile()
 
     root = Tk()
+    root.title('Reporting GUI V4')
     variable = tkinter.StringVar(root)
     variable.set('')
     drop_down_menu = OptionMenu(root, variable, '')
@@ -192,7 +193,6 @@ def main():
     mybutton.grid(row=5, column=0)
     mybutton2.grid(row=2, columns=2)
 
-
     def show_option(path, sheet_name):
         dropdown_menu = drop_down_menu
         option_list = get_options(path, sheet_name)
@@ -212,21 +212,18 @@ def main():
             body_dict, choice = analyse_file(path, variable, sheet_name_variable)
             output_file(body_dict, choice)
             button_message = "Everything went smoothly, the files should be in the folder " + \
-                             "from which you executed the program"
+                             "from which you executed the program ;)"
             mylabel2 = Label(root, text=button_message)
             mylabel2.grid(row=6, column=0)
 
     def myfile():
-
-        message.set("Please allow up to 1 minute to read the file, depending on its size")
-        mylabel2.grid(row=6, column=0)
-
-
         def OptionMenu_SelectionEvent(event):
             show_option(path, event)
 
         try:
             root.fasta_file = filedialog.askopenfilename()
+            message.set("Please allow up to 1 minute to read the file, depending on its size")
+            mylabel2.grid(row=6, column=0)
             mypath.delete(first=0, last=tkinter.END)
             mypath.insert(0, root.fasta_file)
             path = mypath.get()
@@ -243,17 +240,17 @@ def main():
 
             root.update()
         except ValueError:
-            message.set("something went wrong, the most likely cause for this error is that you selected " + \
-                        "the wrong type of file")
+            message.set("Something went wrong, the most likely cause for this error is that you selected " + \
+                        "the wrong type of file.")
 
     try:
         root.mainloop()
     except Exception as e:
         # please remove my email address if you took over this script
         email_address = 'martin.racoupeau@univ-tlse3.fr'
-        message.set('Something went wrong, please send the errorlog that should have been created in the ' \
-                    + 'folder from which you executed the program to ' \
-                    + email_address \
+        message.set('Something went wrong, please send the errorlog that should have been created in the '
+                    + 'folder from which you executed the program to '
+                    + email_address
                     + ' or the person currently maintaining the script.')
 
         now = datetime.now()
