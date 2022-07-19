@@ -21,7 +21,6 @@ def analyse_file(path, variable, sheet_name):
 
     body_dict = {}
 
-    default_header = ['✓Closed', 'Dialog', 'ΙΡΑ', 'Recourse', 'RENEGO', 'Survey']
 
     for i in range(0, len(file)):
         if file['Project'][i] == choice:
@@ -105,7 +104,6 @@ def make_line(header, file, i):
 
 
 def return_proper_time(date):
-
     try:
         return str(date)[0:10]
     except IndexError:
@@ -134,13 +132,15 @@ def get_options(path, sheet_name):
     return option_list
 
 
-def get_slide(path):
+def get_sheet_list(path):
     file = pd.read_excel(path, sheet_name=None, header=10)
     slide_list = list(file.keys())
     return slide_list
 
 
 def main():
+    # yes, I known there is probably no need for sub-functions had I structured the code better, did I do it? No.
+    # Does the code works either way? yes
     def myclick_sub():
         myclick()
 
@@ -148,6 +148,7 @@ def main():
         myfile()
 
     root = Tk()
+    root.resizable(width=False, height=False)
     root.title('Reporting GUI V4')
     variable = tkinter.StringVar(root)
     variable.set('')
@@ -208,7 +209,7 @@ def main():
             mypath.delete(first=0, last=tkinter.END)
             mypath.insert(0, root.fasta_file)
             path = mypath.get()
-            slide_list = get_slide(path)
+            slide_list = get_sheet_list(path)
             sheet_name_variable.set(slide_list[0])
             dropdown_menu_slide = drop_down_menu_slide
             dropdown_menu_slide1 = OptionMenu(root, sheet_name_variable, *slide_list,
@@ -221,15 +222,16 @@ def main():
 
             root.update()
         except ValueError:
-            message.set("Something went wrong, the most likely cause for this error is that you selected " + \
-                        "the wrong type of file.")
+            message.set("Something went wrong, the most likely cause for this error is that \nyou selected the wrong "
+                        "type of file.")
 
     try:
         root.mainloop()
     except Exception as e:
-        # please remove my email address if you took over this script
+        # please remove my email address if you took over this script.
+        # but don't hesitate to send me an email to tell me how much of an abomination you found my code to be
         email_address = 'martin.racoupeau@univ-tlse3.fr'
-        message.set('Something went wrong, please send the errorlog that should have been created in the '
+        message.set('Something went wrong, please send the errorlog that should have been\n created in the '
                     + 'folder from which you executed the program to '
                     + email_address
                     + ' or the person currently maintaining the script.')
@@ -244,12 +246,3 @@ def main():
 if __name__ == "__main__":
     main()
 
-"""
-def OptionMenu_SelectionEvent(event): # I'm not sure on the arguments here, it works though
-    ## do something
-    pass
-
-var = StringVar()
-var.set("one")
-options = ["one", "two", "three"]
-OptionMenu(frame, var, *(options), command = OptionMenu_SelectionEvent).pack()"""
