@@ -16,7 +16,7 @@ it was made by a student learning python with the only goal of making something 
 
 def analyse_file(path, variable, sheet_name):
     sheet_name = sheet_name.get()
-    file = pd.read_excel(path, sheet_name=sheet_name, header=10)
+    file = pd.read_excel(path, sheet_name=sheet_name, header=10, parse_dates=True)
     choice = variable.get()
 
     body_dict = {}
@@ -97,7 +97,7 @@ def analyse_file(path, variable, sheet_name):
                                                        file['preNIS sent to Provider'][i],
                                                        file['preNIS approved by provider'][i],
                                                        file['Final NIS ready for QS'][i],
-                                                       file['Final NIS sent to Provider'],
+                                                       file['Final NIS sent to Provider'][i],
                                                        file['Comment'][i]])
                 case "PA":
                     if not body_dict['body8']['body_header']:
@@ -123,9 +123,11 @@ def analyse_file(path, variable, sheet_name):
 
                         body_dict['body10']['body_header'] = \
                             ['Site ID', 'Build Job ID (Netsite)', 'Comment']
+                        body_dict['body10']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
+                                                            file['Comment'][i]])
+                case _:
+                    pass
 
-                    body_dict['body10']['body'].append([file['Site ID'][i], file['Build Job ID (Netsite)'][i],
-                                                        file['Comment'][i]])
     return body_dict, choice
 
 
