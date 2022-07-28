@@ -21,7 +21,7 @@ def analyse_file(path, variable, sheet_name):
 
     body_dict = {}
 
-    default_header = ['✓Closed', 'Dialog', 'ΙΡΑ', 'Recourse', 'RENEGO', 'Survey']
+    # default_header = ['✓Closed', 'Dialog', 'ΙΡΑ', 'Recourse', 'RENEGO', 'Survey']
 
     for i in range(0, len(file)):
         if file['Project'][i] == choice:
@@ -104,12 +104,12 @@ def make_line(header, file, i):
     return line_list
 
 
-def return_proper_time(date):
+"""def return_proper_time(date):
 
     try:
         return str(date)[0:10]
     except IndexError:
-        return pd.nan
+        return pd.nan"""
 
 
 def output_file(body_dict, choice):
@@ -129,7 +129,7 @@ def get_options(path, sheet_name):
     file = pd.read_excel(path, sheet_name=sheet_name, header=10)
     option_list = []
     for el in file['Project']:
-        if el not in option_list and str(type(el)) != "<class 'float'>":
+        if el not in option_list and not isinstance(el, float):
             option_list.append(el)
     return option_list
 
