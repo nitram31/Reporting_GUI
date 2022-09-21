@@ -12,6 +12,14 @@ will stand the wrath of time.
 
 This script will be used to parse Excel spreadsheet, if you edit this script at a later date, please don't judge me, 
 it was made by a student learning python with the only goal of making something functional.
+
+auto-py-to-exe was used to generate the executable, know that you will need to include the openpyxl folder manually, or 
+else the user will not be able to launch it. 
+
+debug: 
+pyinstaller --noconfirm --onefile --console --name "Reporting_GUI_V4_debug.exe" --add-data "D:/Bureau/Cours/M1/pythonProject/venv3.10/Lib/site-packages/openpyxl;openpyxl/"  "D:/Bureau/Cours/M1/pythonProject/Reporting_GUI/Reporting_GUI_V4.py"
+normal: 
+pyinstaller --noconfirm --onefile --windowed --name "Reporting_GUI_V4.exe" --add-data "D:/Bureau/Cours/M1/pythonProject/venv3.10/Lib/site-packages/openpyxl;openpyxl/"  "D:/Bureau/Cours/M1/pythonProject/Reporting_GUI/Reporting_GUI_V4.py"
 """
 
 
@@ -246,7 +254,7 @@ class Interface:
 
         now = datetime.now()
         # dd/mm/YY H:M:S
-        dt_string = now.strftime("%d-%m-%Y_%H:%M:%S")
+        dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
         with open('error_log_' + dt_string, 'w') as file:
             file.write(''.join(traceback.format_tb(ex.__traceback__)) + "\n" + str(ex))
 
