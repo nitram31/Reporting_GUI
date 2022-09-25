@@ -115,13 +115,20 @@ class ExcelFile:
                 line_list.append(self.file_dataframe[el][i])
         return line_list
 
+    def check_choice(self, choice):
+        if '/' in choice:
+            sub = choice.index("/")
+            choice_corrected = choice[:sub] + '-' + choice[sub+1:]
+            return self.check_choice(choice_corrected)
+        return choice
+
     def output_file(self, choice):
         for name in self.body_dict.keys():
             output_name = name
             body = self.body_dict[name]['body']
             header = self.body_dict[name]['body_header']
             df = pd.DataFrame.from_records(body, columns=header)
-            with pd.ExcelWriter('extract' + output_name + "_" + choice + '.xlsx') as writer:
+            with pd.ExcelWriter('extract' + output_name + "_" + self.check_choice(choice) + '.xlsx') as writer:
                 df.to_excel(writer)
 
     def get_options(self):
