@@ -12,7 +12,8 @@ Hi, I am Martin, Anna's masters internship student, know that I'm not paid, so I
 will stand the wrath of time.
 
 This script will be used to parse Excel spreadsheet, if you edit this script at a later date, please don't judge me, 
-it was made by a student learning python with the only goal of making something functional.
+it was made by a student learning python with the only goal of making something functional. Also I am french, this seems
+like an important piece of info.
 
 auto-py-to-exe was used to generate the executable, know that you will need to include the openpyxl folder manually, or 
 else the user will not be able to launch it. 
@@ -32,7 +33,9 @@ class ExcelFile:
         self.sheet_name = None
 
     def analyse_file(self, variable):
-
+        """
+        :param variable:  The name of the project
+        """
         self.file_dataframe = pd.read_excel(self.path, sheet_name=self.sheet_name, header=10, parse_dates=True)
         file = self.file_dataframe
         choice = variable.get()
@@ -76,6 +79,13 @@ class ExcelFile:
         self.body_dict = body_dict
 
     def make_line(self, header, i):
+        """
+        Used to make the list of line that will be inserted in the dictionary, also used to properly format dates
+
+        :param header: header of the project selected
+        :param i: variable incremented in the for loop of analyse_file()
+        :return: the list containing the lines relevant to the selected project
+        """
         line_list = []
         for el in header:
             if isinstance(self.file_dataframe[el][i], pd.Timestamp):
@@ -84,29 +94,40 @@ class ExcelFile:
                 line_list.append(self.file_dataframe[el][i])
         return line_list
 
-    def check_choice(self, choice):
-        if '/' in choice:
-            sub = choice.index("/")
-            choice_corrected = choice[:sub] + '-' + choice[sub + 1:]
-            return self.check_choice(choice_corrected)
-        return choice
+    def check_name(self, name):
+        """
+        Used to make sure there are no windows forbidden characters in the name
+
+        :param name:  variable containing next_step
+        :return: the choice
+        """
+        if '/' in name:  # recursive because it can be, and its fancy
+            sub = name.index("/")
+            name_corrected = name[:sub] + '-' + name[sub + 1:]
+            return self.check_name(name_corrected)
+        return name
 
     def output_file(self, choice, directory):
+        """
+        It outputs files, I mean what could you expect it to do?
+
+        :param choice: name of the project
+        :param directory: Empty by default, contains the path to the custom output directory
+        """
         for name in self.body_dict.keys():
             output_name = name
             body = self.body_dict[name]['body']
             header = self.body_dict[name]['body_header']
             df = pd.DataFrame.from_records(body, columns=header)
-            print(directory+ 'extract'+ output_name + "_"+ self.check_choice(choice)+ '.xlsx')
-            with pd.ExcelWriter(directory
-                                + 'extract'
-                                + output_name
-                                + "_"
-                                + self.check_choice(choice)
-                                + '.xlsx') as writer:
+            file_name = directory + 'extract' + self.check_name(output_name) + "_" + choice + '.xlsx'
+            with pd.ExcelWriter(file_name) as writer:
                 df.to_excel(writer)
 
     def get_options(self):
+        """
+        Gets the different projects available from a selected sheet
+
+        """
         file = pd.read_excel(self.path, sheet_name=self.sheet_name, header=10)
         option_list = []
         header_list = list(file.columns)
@@ -118,18 +139,31 @@ class ExcelFile:
         return
 
     def get_sheet_list(self):
+        """
+        Am I not naming my function clearly enough? It looks at a file, then it gives you the list of sheets it contains
+
+        :return: The names of the sheets in the file
+        """
         file = pd.read_excel(self.path, sheet_name=None, header=10)
         slide_list = list(file.keys())
         return slide_list
 
     def set_sheet_name(self, name):
+        """
+        Used to set the sheet name in the class when a sheet name is selected in the Interface
+
+        :param name: nae od the sheet
+        """
         self.sheet_name = name
         if isinstance(self.sheet_name, tkinter.StringVar):
             self.sheet_name = self.sheet_name.get()
 
 
 class Interface:
-
+    """
+    Ohh boy. This thing is my frankenstein monster, its basically my first python project ever but on its 7th version:
+    its weird, but it works.
+    """
     def __init__(self):
         self.root = Tk()
         root = self.root
@@ -175,6 +209,19 @@ class Interface:
     def change_output_directory(self):
         self.output_directory = filedialog.askdirectory() + '/'
 
+    @staticmethod
+    def cut_string(string):
+        string_formatted = string
+        for i in range(1, len(string)):
+            if i % 64 == 0:
+                j = i
+                while string_formatted[j] != " ":
+                    print(string_formatted[j])
+                    j += 1
+                print(j)
+                string_formatted = string_formatted[:j] + '\n' + string_formatted[j + 1:]
+        return string_formatted
+
     def myclick(self):
         try:
             self.path = self.mypath.get()
@@ -182,8 +229,9 @@ class Interface:
                 self.file.analyse_file(self.variable)
                 choice = self.variable.get()
                 self.file.output_file(choice, self.output_directory)
-                self.message.set("Everything went smoothly. By default, the files should be \n" +
-                                 "in the folder from which you executed the program ;)")
+                message = "Everything went smoothly. By default, the files should be " \
+                          "in the folder from which you executed the program ;)"
+                self.message.set(self.cut_string(message))
                 self.mylabel2.grid(row=6, column=0)
         except Exception as e:
             self.manage_exception(e)
@@ -200,7 +248,8 @@ class Interface:
                 self.file.body_dict = {}
 
         try:
-            self.message.set("Please allow up to 1 minute to read the file, depending on its size")
+            message = "Please allow up to 1 minute to read the file, depending on its size"
+            self.message.set(self.cut_string(message))
             self.mylabel2.grid(row=6, column=0)
             self.root.fasta_file = filedialog.askopenfilename()
             self.mypath.delete(first=0, last=tkinter.END)
@@ -221,9 +270,9 @@ class Interface:
             self.mybutton.config(state='active')
 
         except ValueError:
-            self.message.set(
-                "Something went wrong, the most likely cause for this error is that \nyou selected the wrong "
-                "type of file.")
+            message = "Something went wrong, the most likely cause for this error is that you selected the " \
+                      "wrong type of file."
+            self.message.set(self.cut_string(message))
 
     def show_option(self):
 
@@ -242,10 +291,11 @@ class Interface:
         # please remove my email address if you took over this script.
         # but don't hesitate to email me to tell me how much you like my code
         email_address = 'martin.racoupeau@univ-tlse3.fr'
-        self.message.set('Something went wrong, please send the errorlog that should have been\n '
-                         + 'created in the folder from which you executed the program \nto '
-                         + email_address
-                         + ' or the person currently maintaining the script.')
+        message = 'Something went wrong, please send the errorlog that should have been created in the ' \
+                  'folder from which you executed the program to ' \
+                  + email_address \
+                  + ' or the person currently maintaining the script.'
+        self.message.set(self.cut_string(message))
 
         now = datetime.now()
         # dd/mm/YY H-M-S
