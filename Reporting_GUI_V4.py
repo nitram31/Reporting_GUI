@@ -5,6 +5,7 @@ from tkinter import filedialog
 import pandas as pd
 import time
 import traceback
+import os
 
 """
 Hi, I am Martin, Anna's masters internship student, know that I'm not paid, so I can't assure you that this script
@@ -43,63 +44,31 @@ class ExcelFile:
                 if next_step not in body_dict.keys():
                     body_dict[next_step] = {'body_header': [], 'body': []}
 
-                match next_step:
-                    case "Permitting":
-                        if not body_dict[next_step]['body_header']:
-                            body_dict[next_step]['body_header'] = \
-                                ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
+                if not body_dict[next_step]['body_header']:  # initialize header
+                    match next_step:
 
-                    case "On Hold":
-                        if not body_dict[next_step]['body_header']:
-                            body_dict[next_step]['body_header'] = \
-                                ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
+                        case "NIS":
 
-                    case "Correction BP":
-                        if not body_dict[next_step]['body_header']:
-                            body_dict[next_step]['body_header'] = \
-                                ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
-
-                    case "BP Signing":
-                        if not body_dict[next_step]['body_header']:
-                            body_dict[next_step]['body_header'] = \
-                                ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
-
-                    case "BP Application":
-                        if not body_dict[next_step]['body_header']:
-                            body_dict[next_step]['body_header'] = \
-                                ['Site ID', 'Build Job ID (Netsite)', 'Comment']
-
-                    case "Draft":
-                        if not body_dict[next_step]['body_header']:
-                            body_dict[next_step]['body_header'] = \
-                                ['Site ID', 'Build Job ID (Netsite)', 'Survey', 'Comment']
-
-                    case "NIS":
-                        if not body_dict[next_step]['body_header']:
                             body_dict[next_step]['body_header'] = \
                                 ['Site ID', 'Build Job ID (Netsite)', 'preNIS ready for QS',
                                  'preNIS sent to Provider', 'preNIS approved by provider',
                                  'Final NIS ready for QS', 'Final NIS sent to Provider', 'Comment']
 
-                    case "PA":
-                        if not body_dict[next_step]['body_header']:
-                            body_dict[next_step]['body_header'] = \
-                                ['Site ID', 'Build Job ID (Netsite)', 'Comment']
+                        case "Survey" | "Draft":
 
-                    case "Survey":
-                        if not body_dict[next_step]['body_header']:
                             body_dict[next_step]['body_header'] = \
                                 ['Site ID', 'Build Job ID (Netsite)', 'Survey', 'Comment']
 
-                    case "AVOR":
-                        if not body_dict[next_step]['body_header']:
+                        case "AVOR" | "PA":
+
                             body_dict[next_step]['body_header'] = \
                                 ['Site ID', 'Build Job ID (Netsite)', 'Comment']
 
-                    case 'Closed' | 'Dialog' | 'EGT to sign Lease' | 'GA' | 'MBA Analysis' | 'Prep Lease (MV/DBV)' | \
-                         'Recourse' | 'SFRO' | 'SFR1' | 'TC' | 'Unsuccessful Search' | 'ΙΡΑ' | 'RENEGO' | 'Survey' | \
-                         'Measurem. Report' | 'New Site':
-                        if not body_dict[next_step]['body_header']:
+                        case 'Permitting' | 'On Hold' | 'Correction BP' | 'BP Signing' | 'Closed' | 'Dialog' \
+                             | 'EGT to sign Lease' | 'GA' | 'MBA Analysis' | 'Prep Lease (MV/DBV)' | 'Recourse' \
+                             | 'SFRO' | 'SFR1' | 'TC' | 'Unsuccessful Search' | 'ΙΡΑ' | 'RENEGO' | 'Survey' \
+                             | 'Measurem. Report' | 'New Site':
+
                             body_dict[next_step]['body_header'] = \
                                 ['Site ID', 'Build Job ID (Netsite)', "Blocking Issue", 'Comment']
 
@@ -118,17 +87,23 @@ class ExcelFile:
     def check_choice(self, choice):
         if '/' in choice:
             sub = choice.index("/")
-            choice_corrected = choice[:sub] + '-' + choice[sub+1:]
+            choice_corrected = choice[:sub] + '-' + choice[sub + 1:]
             return self.check_choice(choice_corrected)
         return choice
 
-    def output_file(self, choice):
+    def output_file(self, choice, directory):
         for name in self.body_dict.keys():
             output_name = name
             body = self.body_dict[name]['body']
             header = self.body_dict[name]['body_header']
             df = pd.DataFrame.from_records(body, columns=header)
-            with pd.ExcelWriter('extract' + output_name + "_" + self.check_choice(choice) + '.xlsx') as writer:
+            print(directory+ 'extract'+ output_name + "_"+ self.check_choice(choice)+ '.xlsx')
+            with pd.ExcelWriter(directory
+                                + 'extract'
+                                + output_name
+                                + "_"
+                                + self.check_choice(choice)
+                                + '.xlsx') as writer:
                 df.to_excel(writer)
 
     def get_options(self):
@@ -159,7 +134,7 @@ class Interface:
         self.root = Tk()
         root = self.root
         root.resizable(width=False, height=False)
-        root.title('Reporting GUI V4')
+        root.title('Reporting GUI V5')
         self.variable = tkinter.StringVar(root)
         self.variable.set('')
         self.drop_down_menu = OptionMenu(root, self.variable, '')
@@ -184,10 +159,21 @@ class Interface:
         self.mybutton2 = Button(self.frame2, text="Select file", command=self.myfile)
         self.mybutton.grid(row=5, column=0)
         self.mybutton2.grid(row=2, columns=2)
+
+        self.menu = tkinter.Menu(root)
+        self.menu1 = tkinter.Menu(root)
+        self.menu.add_cascade(label="File options", menu=self.menu1)
+        self.menu1.add_command(label="Change Output directory", command=self.change_output_directory)
+        self.root.config(menu=self.menu, width=200)
+
         self.path = ""
+        self.output_directory = ""
         self.file = None
         self.sheet_name = ""
         self.root.mainloop()
+
+    def change_output_directory(self):
+        self.output_directory = filedialog.askdirectory() + '/'
 
     def myclick(self):
         try:
@@ -195,9 +181,9 @@ class Interface:
             if self.path != "":
                 self.file.analyse_file(self.variable)
                 choice = self.variable.get()
-                self.file.output_file(choice)
-                self.message.set("Everything went smoothly, the files should be in the folder " +
-                                 "from which you executed the program ;)")
+                self.file.output_file(choice, self.output_directory)
+                self.message.set("Everything went smoothly. By default, the files should be \n" +
+                                 "in the folder from which you executed the program ;)")
                 self.mylabel2.grid(row=6, column=0)
         except Exception as e:
             self.manage_exception(e)
@@ -210,6 +196,8 @@ class Interface:
             self.show_option()
             time.sleep(4)
             self.message.set("")
+            if self.file:
+                self.file.body_dict = {}
 
         try:
             self.message.set("Please allow up to 1 minute to read the file, depending on its size")
