@@ -260,7 +260,7 @@ class Interface:
                          + ' or the person currently maintaining the script.')
 
         now = datetime.now()
-        # dd/mm/YY H:M:S
+        # dd/mm/YY H-M-S
         dt_string = now.strftime("%d-%m-%Y_%H-%M-%S")
         with open('error_log_' + dt_string, 'w') as file:
             file.write(''.join(traceback.format_tb(ex.__traceback__)) + "\n" + str(ex))
