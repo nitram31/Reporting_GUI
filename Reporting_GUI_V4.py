@@ -215,10 +215,11 @@ class Interface:
         for i in range(1, len(string)):
             if i % 64 == 0:
                 j = i
-                while string_formatted[j] != " ":
-                    print(string_formatted[j])
+                while string_formatted[j] != " " and j < len(string) - 1:
                     j += 1
-                print(j)
+                if j != " ":
+                    while string_formatted[j] != " ":
+                        j -= 1
                 string_formatted = string_formatted[:j] + '\n' + string_formatted[j + 1:]
         return string_formatted
 
