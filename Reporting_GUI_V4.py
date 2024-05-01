@@ -2,10 +2,12 @@ import tkinter
 from datetime import datetime
 from tkinter import *
 from tkinter import filedialog
+from tkinter.ttk import Progressbar
+
 import pandas as pd
 import time
 import traceback
-import os
+from threadom import Threadom
 
 """
 Hi, I am Martin, Anna's masters internship student, know that I'm not paid, so I can't assure you that this script
@@ -164,6 +166,7 @@ class Interface:
     Ohh boy. This thing is my frankenstein monster, its basically my first python project ever but on its 7th version:
     its weird, but it works.
     """
+
     def __init__(self):
         self.root = Tk()
         root = self.root
@@ -188,9 +191,8 @@ class Interface:
 
         self.message = StringVar()
         self.mylabel2 = Label(root, textvariable=self.message)
-
-        self.mybutton = Button(root, text="Run scan", command=self.myclick, state="disabled")
-        self.mybutton2 = Button(self.frame2, text="Select file", command=self.myfile)
+        self.mybutton = Button(root, text="Run scan", command=self.myclickthread, state="disabled")
+        self.mybutton2 = Button(self.frame2, text="Select file", command=self.myfilethread)
         self.mybutton.grid(row=5, column=0)
         self.mybutton2.grid(row=2, columns=2)
 
@@ -223,6 +225,7 @@ class Interface:
                 string_formatted = string_formatted[:j] + '\n' + string_formatted[j + 1:]
         return string_formatted
 
+
     def myclick(self):
         try:
             self.path = self.mypath.get()
@@ -236,6 +239,14 @@ class Interface:
                 self.mylabel2.grid(row=6, column=0)
         except Exception as e:
             self.manage_exception(e)
+
+    def myclickthread(self):
+        threadom = Threadom(self.root)
+        threadom.run(self.myclick())
+
+    def myfilethread(self):
+        threadom = Threadom(self.root)
+        threadom.run(self.myfile())
 
     def myfile(self):
         def OptionMenu_SelectionEvent(event):
