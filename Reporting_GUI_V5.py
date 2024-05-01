@@ -14,16 +14,16 @@ Hi, I am Martin, Anna's masters internship student, know that I'm not paid, so I
 will stand the wrath of time.
 
 This script will be used to parse Excel spreadsheet, if you edit this script at a later date, please don't judge me, 
-it was made by a student learning python with the only goal of making something functional. Also I am french, this seems
-like an important piece of info.
+it was made by a student learning python with the only goal of making something functional. Also I am french. (This seems
+like an important piece of info.)
 
 auto-py-to-exe was used to generate the executable, know that you will need to include the openpyxl folder manually, or 
 else the user will not be able to launch it. 
 
 debug: 
-pyinstaller --noconfirm --onefile --console --name "Reporting_GUI_V4_debug.exe" --add-data "D:/Bureau/Cours/M1/pythonProject/venv3.10/Lib/site-packages/openpyxl;openpyxl/"  "D:/Bureau/Cours/M1/pythonProject/Reporting_GUI/Reporting_GUI_V4.py"
+pyinstaller --noconfirm --onefile --console --name "Reporting_GUI_V4_debug.exe" --add-data "D:/Bureau/Cours/M1/pythonProject/venv3.10/Lib/site-packages/openpyxl;openpyxl/"  "D:/Bureau/Cours/M1/pythonProject/Reporting_GUI/Reporting_GUI_V5.py"
 normal: 
-pyinstaller --noconfirm --onefile --windowed --name "Reporting_GUI_V4.exe" --add-data "D:/Bureau/Cours/M1/pythonProject/venv3.10/Lib/site-packages/openpyxl;openpyxl/"  "D:/Bureau/Cours/M1/pythonProject/Reporting_GUI/Reporting_GUI_V4.py"
+pyinstaller --noconfirm --onefile --windowed --name "Reporting_GUI_V4.exe" --add-data "D:/Bureau/Cours/M1/pythonProject/venv3.10/Lib/site-packages/openpyxl;openpyxl/"  "D:/Bureau/Cours/M1/pythonProject/Reporting_GUI/Reporting_GUI_V5.py"
 """
 
 
@@ -154,7 +154,7 @@ class ExcelFile:
         """
         Used to set the sheet name in the class when a sheet name is selected in the Interface
 
-        :param name: nae od the sheet
+        :param name: name of the sheet
         """
         self.sheet_name = name
         if isinstance(self.sheet_name, tkinter.StringVar):
@@ -163,7 +163,7 @@ class ExcelFile:
 
 class Interface:
     """
-    Ohh boy. This thing is my frankenstein monster, its basically my first python project ever but on its 7th version:
+    Ohh boy. This thing is my frankenstein monster, it's basically my first python project ever but on its 7th version:
     its weird, but it works.
     """
 
@@ -224,7 +224,6 @@ class Interface:
                         j -= 1
                 string_formatted = string_formatted[:j] + '\n' + string_formatted[j + 1:]
         return string_formatted
-
 
     def myclick(self):
         try:
@@ -302,7 +301,7 @@ class Interface:
     def manage_exception(self, ex):
         # please remove my email address if you took over this script.
         # but don't hesitate to email me to tell me how much you like my code
-        email_address = 'martin.racoupeau@univ-tlse3.fr'
+        email_address = 'martin.racoupeau@gmail.com'
         message = 'Something went wrong, please send the errorlog that should have been created in the ' \
                   'folder from which you executed the program to ' \
                   + email_address \
