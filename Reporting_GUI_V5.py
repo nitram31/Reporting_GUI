@@ -211,7 +211,7 @@ class Interface:
     def change_output_directory(self):
         self.output_directory = filedialog.askdirectory() + '/'
 
-    @staticmethod
+    """@staticmethod
     def cut_string(string):
         string_formatted = string
         for i in range(1, len(string)):
@@ -223,7 +223,24 @@ class Interface:
                     while string_formatted[j] != " ":
                         j -= 1
                 string_formatted = string_formatted[:j] + '\n' + string_formatted[j + 1:]
-        return string_formatted
+        return string_formatted"""
+
+    @staticmethod
+    def cut_string(string):
+        string_list = string.split(' ')
+        return_string = ""
+        total_len = 0
+        index = 0
+        for i, word in enumerate(string_list):
+            total_len += len(word)
+            if total_len < 64:
+                continue
+            total_len = 0
+            return_string += " ".join(string_list[0+index:i]) + "\n" + string_list[i]
+            index = i + 1
+        return return_string if return_string != "" else string
+
+
 
     def myclick(self):
         try:
@@ -240,12 +257,14 @@ class Interface:
             self.manage_exception(e)
 
     def myclickthread(self):
-        threadom = Threadom(self.root)
-        threadom.run(self.myclick())
+        """threadom = Threadom(self.root)
+        threadom.run(self.myclick())"""
+        self.myclick()
 
     def myfilethread(self):
-        threadom = Threadom(self.root)
-        threadom.run(self.myfile())
+        """threadom = Threadom(self.root)
+        threadom.run(self.myfile())"""
+        self.myfile()
 
     def myfile(self):
         def OptionMenu_SelectionEvent(event):
@@ -262,9 +281,9 @@ class Interface:
             message = "Please allow up to 1 minute to read the file, depending on its size"
             self.message.set(self.cut_string(message))
             self.mylabel2.grid(row=6, column=0)
-            self.root.fasta_file = filedialog.askopenfilename()
+            self.root.excel_file = filedialog.askopenfilename()
             self.mypath.delete(first=0, last=tkinter.END)
-            self.mypath.insert(0, self.root.fasta_file)
+            self.mypath.insert(0, self.root.excel_file)
             path = self.mypath.get()
             self.file = ExcelFile(path)
             slide_list = self.file.get_sheet_list()
